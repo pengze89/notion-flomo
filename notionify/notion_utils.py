@@ -104,14 +104,18 @@ def get_quote(content):
 
 
 def get_rich_text_from_result(result, name):
-    return result.get("properties").get(name).get("rich_text")[0].get("plain_text")
-
+    properties = result.get("properties", {})
+    property_value = properties.get(name, {})
+    rich_text = property_value.get("rich_text", [])
+    
+    if rich_text and len(rich_text) > 0:
+        return rich_text[0].get("plain_text", "")
+    else:
+        logging.warning(f"No rich text found for property '{name}' in result: {result}")
+        return ""  
 
 def get_number_from_result(result, name):
     return result.get("properties").get(name).get("number")
-
-
-
 
 
 def get_properties(dict1, dict2):
